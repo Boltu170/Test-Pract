@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Accounting Quiz</title>
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--tx:#1d2733;--mu:#667;--ac:#0b2a5b;--ok:#1b7f3b;--okb:#e5f5ea;--no:#b3261e;--nob:#fbe9e7;--bd:#d5d9df}
+@media(prefers-color-scheme:dark){:root{--bg:#12161c;--card:#1b2129;--tx:#e8ecf1;--mu:#9aa5b1;--ac:#6ea0ff;--ok:#5fd183;--okb:#183524;--no:#ff8a80;--nob:#3a1d1a;--bd:#2f3843}}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.45 system-ui,sans-serif;background:var(--bg);color:var(--tx)}
+main{max-width:720px;margin:0 auto;padding:16px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:18px}
+h1{font-size:1.4rem;margin:.2rem 0 1rem}
+.bar{height:6px;background:var(--bd);border-radius:3px;margin:8px 0 14px}
+.bar i{display:block;height:100%;background:var(--ac);border-radius:3px}
+.meta{color:var(--mu);font-size:.9rem;display:flex;justify-content:space-between}
+.opt{display:block;width:100%;text-align:left;margin:8px 0;padding:12px;border:1px solid var(--bd);border-radius:10px;background:var(--card);color:var(--tx);font:inherit;cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--ac)}
+.opt.ok{background:var(--okb);border-color:var(--ok)}
+.opt.no{background:var(--nob);border-color:var(--no)}
+.btn{padding:11px 18px;border:0;border-radius:10px;background:var(--ac);color:var(--bg);font:inherit;font-weight:600;cursor:pointer;margin:6px 6px 0 0}
+.btn.alt{background:transparent;color:var(--ac);border:1px solid var(--ac)}
+.ex{margin:12px 0 6px;padding:12px;border-left:4px solid var(--ac);background:var(--bg);border-radius:6px;font-size:.95rem}
+.big{font-size:2.4rem;font-weight:700;margin:6px 0}
+.rev{border-top:1px solid var(--bd);padding:10px 0;font-size:.95rem}
+.rev b{color:var(--no)}
+.rev span{color:var(--ok)}
+label{display:block;margin:8px 0}
+</style>
+</head>
+<body>
+<main><div class="card" id="app"></div></main>
+<script>
+// [question, [options], correctIndex]
+const Q=[
+["Which branch of accounting is primarily for internal planning and decision-making?",["Financial accounting","External auditing","Management accounting","Taxation"],2],
+["What are the core statements in the annual financial report?",["Sales report and bank reconciliation","Income statement, Statement of Financial Position, Statement of changes in equity, and Statement of cash flows","Director’s report and audit opinion","Budgeted income statement only"],1],
+["Which item is least likely to appear on the Statement of Financial Position?",["Sales revenue","Trade receivables","Inventory","Property, plant and equipment"],0],
+["Which item is least likely to appear on the Statement of Profit and Loss?",["Cost of sales","Administrative expenses","Revenue","Dividends paid"],3],
+["Which best reflects the purpose of financial accounting?",["Internal control design","Setting selling prices","Reporting financial information to external users","Scheduling production"],2],
+["Which statement for a Limited Liability Company is correct?",["Directors manage the company for shareholders","Shareholders manage day-to-day operations by default","Shares can never be transferred","The company is not a separate legal person"],0],
+["On the Statement of Financial Position, equity is shown alongside:",["Only assets","Only liabilities","Retained earnings only","Assets and liabilities"],3],
+["Pay loan interest £250 by bank.",["Dr Interest Expense £250; Cr Bank £250","Dr Bank Loan £250; Cr Bank £250","Dr Bank £250; Cr Interest Expense £250","Dr Interest Payable £250; Cr Bank £250"],0],
+["Record depreciation on fixtures £400 for the month.",["Dr Fixtures £400; Cr Cash £400","Dr Accumulated Depreciation £400; Cr Depreciation Expense £400","Dr Depreciation Expense £400; Cr Accumulated Depreciation – Fixtures £400","Dr Profit and Loss £400; Cr Fixtures £400"],2],
+["Owner withdraws £700 cash for personal use.",["Dr Drawings £700; Cr Cash £700","Dr Capital £700; Cr Cash £700","Dr Wages £700; Cr Cash £700","Dr Cash £700; Cr Drawings £700"],0],
+["Pay supplier £3,000 by bank transfer to settle an existing payable:",["Dr Purchases £3,000; Cr Bank £3,000","Dr Bank £3,000; Cr Trade Payables £3,000","Dr Trade Payables £3,000; Cr Bank £3,000","Dr Expenses £3,000; Cr Bank £3,000"],2],
+["Buy inventory on credit from Z Ltd for £4,200.",["Dr Inventory £4,200; Cr Trade Receivables £4,200","Dr Purchases £4,200; Cr Trade Payables £4,200","Dr Trade Payables £4,200; Cr Purchases £4,200","Dr Cash £4,200; Cr Purchases £4,200"],1],
+["Which scenario BEST illustrates a self-interest threat?",["An auditor promotes a client’s tax position to HMRC.","An accountant owns shares in a client company they are auditing.","An auditor is asked to review their own prior forecast.","An accountant becomes overly friendly with a client’s CFO."],1],
+["A company using AI-based invoice processing finds that the algorithm frequently misclassifies supplier invoices. What is the MOST appropriate safeguard?",["Regular human review and validation of AI outputs","Switch off the AI system","Increase staff training in manual bookkeeping","Outsource all accounting work"],0],
+["An accountant designs a forecast model for sales. Later, they are asked to audit whether the model’s assumptions were reasonable. What ethical threat arises?",["Familiarity","Advocacy","Intimidation","Self-review"],3],
+["A clothing retailer highlights its use of “sustainable fabrics” while ignoring reports of poor working conditions in supplier factories. This is best described as:",["Advocacy threat","Fraudulent reporting","Greenwashing","Off-balance sheet accounting"],2],
+["A large retailer suffered a cyberattack through a phishing email that compromised its accounts payable system. Which control weakness most likely contributed?",["Inadequate employee training on cybersecurity","Lack of segregation of duties","Excessive ERP integration","Weak AI algorithms in fraud detection"],0],
+["Which is a key step if an accountant finds illegal activity internally?",["Ignore it","Resign immediately","Post on social media","Report it to compliance and escalate if unresolved"],3],
+["A key anti-money laundering measure when taking new clients is:",["Marketing services","Filing tax returns","Running background and identity checks","Preparing budgets"],2],
+["Greenfield Furniture Ltd is a small manufacturing business owned by three shareholders. The company has recently experienced cash-flow difficulties and is unable to pay £80,000 owed to several suppliers. One shareholder, James, invested £20,000 when the company was established and has fully paid for his shares. Which ONE of the following statements best describes James's position?",["James must personally contribute towards the £80,000 owed to suppliers because shareholders are the owners of the business.","James would normally not be personally responsible for the company's debts because the company is a separate legal entity and his liability is limited.","James must personally pay one-third of the £80,000 because there are three shareholders.","James is personally responsible for the debts because a limited company does not have a separate legal identity from its shareholders."],1],
+["Brighton Ltd prepares its financial statements for the year ended 31 December 2026. In December 2026, the company received electricity services costing £3,600, but the supplier will not issue the invoice until January 2027. The invoice will be paid in February 2027. How should the £3,600 be treated in the financial statements for the year ended 31 December 2026?",["Record no expense because the invoice has not yet been received.","Record the £3,600 as an expense only when it is paid in February 2027.","Record the £3,600 as an expense and recognise an accrual of £3,600.","Record the £3,600 as a prepayment because payment will occur in the next accounting period."],2],
+["Nova Ltd completes hundreds of transactions each month. At the end of March, the accountant has already recorded the company's transactions in the appropriate ledger accounts. The next stage is to check whether the total debit balances agree with the total credit balances before preparing the financial statements. Which ONE of the following should the accountant prepare next?",["Bank statement","Statement of financial position","Source documents","Trial balance"],3],
+["A new accounting assistant at Horizon Ltd is processing the company’s transactions. She has collected the relevant invoices and receipts but is unsure of the correct sequence. Which ONE of the following shows the most appropriate sequence in the accounting cycle?",["Source documents → Ledger accounts → Trial balance → Financial statements","Source documents → Trial balance → Ledger accounts → Financial statements","Ledger accounts → Source documents → Financial statements → Trial balance","Trial balance → Source documents → Ledger accounts → Financial statements"],0],
+["Sophie is an accounts assistant at a manufacturing company. Her manager asks her to delay recording a supplier invoice until the next accounting period so that the company’s profit will appear higher this year. Sophie knows that the invoice relates to goods received in the current year. Which ONE of the following actions would best demonstrate the ethical principle of integrity?",["Delay recording the invoice because her manager has authorised it.","Record the invoice in the correct accounting period and raise her concern through the appropriate internal process.","Record half of the invoice this year as a compromise with her manager.","Delete the invoice because it may negatively affect the company’s reported performance"],1],
+["Daniel, a junior accountant, is asked to prepare a complex corporation tax calculation that he has never completed before. The deadline is tomorrow, and his manager is unavailable. Which ONE of the following actions best demonstrates professional competence and due care?",["Complete the calculation based on his best guess to meet the deadline","Use last year’s calculation without checking whether tax rules have changed.","Explain his lack of experience and seek appropriate technical guidance before completing the work.","Refuse to undertake any work that he has not performed previously."],2],
+["Amira works for an accounting firm and has access to the financial records of a successful local business. During dinner with a friend, she is asked whether the business is as profitable as people believe. Which ONE of the following is the most appropriate action?",["Share the information because her friend has promised not to tell anyone.","Discuss the information provided she does not show the actual financial statements.","Share general financial information because the business is well known locally.","Keep the information confidential unless disclosure is authorised or there is a legal or professional duty to disclose it."],3],
+["EcoHome Ltd is considering replacing its existing production equipment. The new equipment costs more but uses less energy, produces less waste and is expected to reduce operating costs over its useful life. When evaluating this investment from a sustainability perspective, which ONE of the following would be the most appropriate approach?",["Consider both the long-term financial and environmental impacts of the investment.","Consider only the initial purchase price of the equipment.","Select the equipment that generates the highest production volume regardless of its environmental impact.","Ignore environmental impacts because accountants are responsible only for financial information."],0],
+["Leo is an accountant preparing the year-end financial statements for his employer. He identifies a significant error that would reduce the company’s reported profit. The Finance Director tells Leo not to correct the error and warns that raising the issue could affect his promotion. Which ONE of the following ethical threats is Leo primarily facing?",["Intimidation threat","Self-interest threat","Familiarity threat","Advocacy threat"],0],
+["Alpha Ltd has experienced financial difficulties during the year. However, management has secured new long-term financing and prepared cash-flow forecasts showing that the company should be able to continue operating and meet its obligations for the foreseeable future. Which ONE of the following best explains how the going concern concept applies?",["The financial statements should assume that the company will cease trading immediately.","The financial statements can normally be prepared on the basis that the company will continue operating for the foreseeable future.","All non-current assets should immediately be valued at their expected selling prices.","The financial statements should be prepared using a liquidation basis because the company experienced financial difficulties during the year."],1],
+["An accounts assistant at Delta Ltd receives an email that appears to be from a regular supplier. The email states that the supplier has changed its bank account details and asks that all future payments be made to the new account. The email requests an urgent payment of £18,000. Which ONE of the following is the most appropriate action?",["Update the bank details immediately because the email appears to come from a regular supplier.","Reply to the email asking the supplier to confirm the new bank details.","Verify the change independently using established contact details before updating the supplier’s records or making payment.","Make the payment first and verify the bank details afterwards to avoid a late-payment penalty."],2],
+["FreshBite Ltd operates six cafés across Essex. The finance director is preparing two reports. Report A summarises the company's annual financial performance for shareholders. Report B analyses the profitability of each café and forecasts costs for the next six months to help managers decide whether to close an underperforming location. Which one of the following correctly describes the reports?",["Report A is financial accounting and Report B is management accounting.","Both reports are financial accounting reports because they contain financial information.","Report A is management accounting and Report B is financial accounting.","Both reports are management accounting reports because managers prepare them"],0],
+["Noa Ltd has experienced rising production costs. Management sets monthly departmental cost targets and compares actual costs against them. Department managers receive reports showing any significant differences so that corrective action can be taken. Which management accounting purpose is most directly illustrated?",["Planning","Controlling","Communicating","Motivating"],1],
+["CyclePro Ltd manufactures premium bicycles. During May, it incurs the following costs: 1. Aluminium used to manufacture bicycle frames; 2. Wages of workers assembling bicycles; 3. Salary of the factory cleaner; 4. Cleaning products used for cleaning the factory floor. Which one of the following classifications is correct?",["Items 1, 2 and 3 are direct costs; item 4 is indirect.","Items 1 and 4 are direct costs; items 2 and 3 are indirect.","Items 1 and 2 are direct costs; items 3 and 4 are indirect costs.","All four items are production overheads."],2],
+["CloudConnect Ltd provides IT support services. Its monthly internet and telephone package includes a fixed charge of £1,200 per month, plus an additional £0.08 per minute for customer support calls. As the number of customer support calls increases, the company's total communication cost also increases. How should this cost be classified?",["Fixed cost","Variable cost","Stepped fixed cost","Semi-variable cost"],3],
+["GreenTech Ltd is developing a new cost and management accounting information system. The operations director argues that the system should only record costs needed to calculate inventory values for the annual financial statements. Which one of the following best explains why this approach is inadequate?",["The system should also provide relevant information for decision-making, planning, control and performance measurement.","A cost accounting system should only provide information about variable costs.","Management accounting systems should only record non-financial information.","Inventory valuation is not a purpose of a cost and management accounting system."],0],
+["EcoFurniture Ltd manufactures office desks. Costs incurred in producing 500 desks during June: Timber £18,000; Assembly workers' wages £12,000; Factory supervisor salary £4,000; Factory rent £6,000. What is the total prime cost of producing the 500 desks?",["£35,000","£30,000","£40,000","£45,000"],1],
+["A company incurs total costs of £450,000 at an activity level of 5,000 units and £600,000 at 10,000 units. What is the variable cost per unit?",["£25","£30","£35","£40"],1],
+["A company’s monthly maintenance cost contains both a fixed and a variable element. At the lowest activity (100 units) the cost was £15,500, and at the highest (300 units) it was £22,500. Using the high-low method, what is the estimated monthly maintenance cost when units are 200?",["£7,000","£12,000","£19,000","£21,000"],2],
+["A company operates a job costing system. Job 119 requires 110 hours of labour at £8 per hour. Materials and other expenses amount to £1,700. There are 3 employees whose basic hours are 30 hours a week. All work is to be completed in one week at the specific request of the customer. Overtime is paid at time and a quarter. What is the total direct labour cost of Job 119?",["£920","£880","£2,580","£2,620"],0],
+["Calculate the total cost if a company produces 1,000 units of a product with a variable cost per unit of £10 and fixed costs of £5,000.",["£10,000","£15,000","£20,000","£25,000"],1],
+["Sarah works for BrightTech Ltd and receives a monthly payslip showing basic salary, a performance bonus, income tax, National Insurance and pension contributions. Which one of the following correctly describes Sarah's net pay?",["Gross pay less relevant deductions","Basic salary plus bonus","Basic salary plus pension contribution","Gross pay plus pension contribution"],0],
+["Precision Furniture Ltd manufactures bespoke tables. Labour costs: 1. Basic wages of employees assembling tables; 2. Salary of the factory supervisor; 3. Wages of maintenance employees repairing machinery; 4. Basic wages of employees cutting timber for specific tables. Which one of the following correctly identifies the direct labour costs?",["1, 2 and 4 only","1 and 4 only","1, 3 and 4 only","2 and 3 only"],1],
+["FreshBake Ltd's production employees normally work 35 hours per week. Due to an unexpected increase in customer orders, management asks all production workers to work additional overtime. The overtime is required for general production, rather than for a specific customer order. How should the overtime premium normally be classified?",["Direct labour cost","Direct material cost","Indirect labour cost","Non-production cost"],2],
+["SpeedParts Ltd introduces a piecework scheme in which production workers are paid based on the number of units produced. Following its introduction, output increases significantly, but management also notices an increase in defective products. Which one of the following is the most appropriate conclusion?",["The scheme is successful because labour productivity is the only relevant performance measure.","Piecework schemes always result in lower product quality and should therefore be avoided.","Management should replace piecework with a fixed salary because incentive schemes cannot improve performance.","The scheme should be evaluated using productivity together with measures such as quality and workforce performance."],3],
+["Alpha Manufacturing Ltd has experienced a significant increase in voluntary employee departures. Exit interviews indicate that employees are dissatisfied with wages, working conditions and limited promotion opportunities. Which one of the following would be the most appropriate response?",["Review remuneration, working conditions, training and promotion opportunities.","Accept the turnover because all labour turnover is unavoidable.","Reduce training expenditure because employees may leave after receiving training.","Increase overtime for the remaining employees instead of recruiting replacements."],0],
+["Alex works for Nova Manufacturing Ltd and is paid £14 per hour for a standard 38-hour week. Overtime is paid at time-and-a-half. During one week, Alex works 44 hours. What is Alex's total gross wage for the week?",["£616","£658","£637","£924"],1],
+["QuickPack Ltd pays its production employees on a piecework basis. Employees receive £2.40 for each completed unit. During one week, Maya produces 185 units. She also receives a £35 quality bonus for maintaining a defect rate below the company's target. What is Maya's total gross wage for the week?",["£409","£444","£479","£515"],2],
+["GreenTech Ltd employs 50 direct production workers. Each worker is paid £12 per hour for a 40-hour week. During one week, each worker works an additional 4 hours of overtime to meet general production requirements. Overtime is paid at time-and-a-half. During the same week, machine breakdowns result in 100 hours of idle time. What is the total indirect labour cost for the week?",["£1,200","£3,600","£4,800","£2,400"],3],
+["Prime Services Ltd employed 800 employees at the beginning of the year and 1,000 employees at the end of the year. During the year, 135 employees voluntarily left the business. Using the labour turnover approach covered in the workshop, what is the labour turnover rate?",["15.0%","13.5%","16.9%","18.0%"],0],
+["FreshFood Ltd manufactures ready meals. The company expected that the actual output produced during the week should require 500 standard labour hours. However, employees actually worked 550 hours to produce this output. What is the labour efficiency ratio for the week?",["100.0%","90.9%","110.0%","115.0%"],1]
+];
+
+const E=[
+"Management accounting supports internal planning, control and decision-making. Financial accounting serves external users.",
+"The core statements are the income statement, statement of financial position, statement of changes in equity and statement of cash flows.",
+"Sales revenue belongs in the income statement. The statement of financial position shows assets, liabilities and equity.",
+"Dividends are a distribution of profit shown in the statement of changes in equity, not an expense in profit or loss.",
+"Financial accounting reports information to external users such as shareholders, lenders and HMRC.",
+"Directors run the company on behalf of shareholders. The company is a separate legal person and shares are normally transferable.",
+"Accounting equation: Assets = Liabilities + Equity, so equity sits alongside liabilities as the funding side.",
+"Interest is an expense (debit) and the bank balance falls (credit).",
+"Depreciation is an expense (debit) with the credit going to accumulated depreciation, a contra-asset account.",
+"Drawings reduce the owner's equity (debit Drawings) and cash falls (credit Cash).",
+"Paying a supplier reduces the liability (debit Trade Payables) and reduces bank (credit Bank).",
+"A credit purchase increases purchases (debit) and increases what we owe the supplier (credit Trade Payables).",
+"A self-interest threat arises from a financial or other interest, such as owning shares in an audit client.",
+"Human review and validation keeps the benefits of AI while catching misclassifications.",
+"Reviewing your own earlier work creates a self-review threat.",
+"Greenwashing means making misleading or selective sustainability claims.",
+"Phishing exploits human error, so the likely weakness is inadequate cybersecurity training.",
+"Report the matter internally to compliance and escalate if it is not resolved.",
+"Anti-money laundering relies on customer due diligence, i.e. identity and background checks.",
+"A limited company is a separate legal entity. James's liability is limited to any unpaid share capital, and his shares are fully paid.",
+"Under the accruals concept, the expense belongs to December 2026 when the service was received, so record the expense and a £3,600 accrual (liability).",
+"After posting to ledger accounts, a trial balance checks that total debits equal total credits.",
+"Accounting cycle: source documents, then ledger accounts, then trial balance, then financial statements.",
+"Integrity means being honest and straightforward: record it in the correct period and raise the concern internally.",
+"Professional competence and due care means acknowledging limits and seeking appropriate guidance rather than guessing.",
+"The duty of confidentiality applies unless disclosure is authorised or there is a legal or professional duty to disclose.",
+"A sustainability perspective weighs both long-term financial and environmental impacts.",
+"Intimidation threat: pressure, here a threat to his promotion, that discourages Leo from acting properly.",
+"Going concern: statements are normally prepared assuming the business continues for the foreseeable future, supported here by new financing and forecasts.",
+"Verify bank detail changes independently using known contact details, as this is a common payment-fraud pattern.",
+"Report A is for external shareholders (financial accounting). Report B supports internal decisions (management accounting).",
+"Comparing actual costs with targets and taking corrective action is the controlling purpose.",
+"Materials and assembly wages are traceable to the product (direct). The cleaner's salary and cleaning products are indirect.",
+"A fixed charge plus a usage-based charge is a semi-variable cost.",
+"The system should also support decision-making, planning, control and performance measurement, not only inventory valuation.",
+"Prime cost = direct materials + direct labour = £18,000 + £12,000 = £30,000.",
+"Variable cost per unit = change in cost / change in units = (£600,000 - £450,000) / 5,000 = £30.",
+"Variable per unit = (22,500 - 15,500) / 200 = £35. Fixed = 15,500 - (100 x 35) = £12,000. At 200 units: 12,000 + (200 x 35) = £19,000.",
+"Basic hours: 3 x 30 = 90 at £8 = £720. Overtime: 20 hours at £8 plus a 25% premium = £200. Total £920 (overtime was at the customer's specific request, so the premium is direct).",
+"Total cost = (1,000 x £10) + £5,000 = £15,000.",
+"Net pay is gross pay (salary plus bonus) less deductions such as income tax, NI and pension.",
+"Direct labour can be traced to specific products: assembling tables and cutting timber for specific tables.",
+"Overtime for general production is not traceable to a specific job, so the premium is an indirect labour cost.",
+"Judge the scheme on several measures, productivity together with quality and workforce performance, not output alone.",
+"Address the stated causes: review pay, working conditions, training and promotion opportunities.",
+"38 x £14 = £532. Overtime: 6 x (£14 x 1.5 = £21) = £126. Total £658.",
+"185 x £2.40 = £444, plus the £35 bonus = £479.",
+"Overtime premium: 50 workers x 4 hours x £6 (half of £12) = £1,200. Idle time: 100 x £12 = £1,200. Total £2,400.",
+"Labour turnover = leavers / average employees = 135 / ((800 + 1,000) / 2) = 15%.",
+"Efficiency ratio = standard hours for actual output / actual hours = 500 / 550 = 90.9%."
+];
+const app=document.getElementById("app");
+let items,i,score,log,locked,shuffleOpts=true;
+
+function shuffle(a){a=a.slice();for(let k=a.length-1;k>0;k--){const j=Math.floor(Math.random()*(k+1));[a[k],a[j]]=[a[j],a[k]]}return a}
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;")}
+
+function home(){
+  app.innerHTML=`<h1>Accounting Quiz</h1>
+  <p>${Q.length} multiple-choice questions · 2 points each · instant feedback.</p>
+  <label><input type="checkbox" id="sq" checked> Shuffle question order</label>
+  <button class="btn" id="go">Start quiz</button>`;
+  document.getElementById("go").onclick=()=>{
+    start(document.getElementById("sq").checked);
+  };
+}
+
+function balance(){
+  // spread the correct answer evenly across A/B/C/D in random order
+  const n=items.length;
+  const slots=shuffle(Array.from({length:n},(_,k)=>k%4));
+  items.forEach((x,k)=>{
+    const right=x.o.find(o=>o.c);
+    const rest=shuffle(x.o.filter(o=>!o.c));
+    const t=Math.min(slots[k],rest.length);
+    rest.splice(t,0,right);
+    x.o=rest;
+  });
+}
+function start(sq){
+  items=Q.map((q,n)=>({q:q[0],e:E[n],o:q[1].map((t,k)=>({t,c:k===q[2]}))}));
+  if(sq)items=shuffle(items);
+  items.forEach(x=>x.o=shuffle(x.o));
+  balance();
+  i=0;score=0;log=[];show();
+}
+
+function show(){
+  const it=items[i];locked=false;
+  app.innerHTML=`<div class="meta"><span>Question ${i+1} of ${items.length}</span><span>Score ${score*2}</span></div>
+  <div class="bar"><i style="width:${i/items.length*100}%"></i></div>
+  <p><strong>${esc(it.q)}</strong></p>
+  <div id="opts">${it.o.map((o,k)=>`<button class="opt" data-k="${k}">${esc(o.t)}</button>`).join("")}</div>
+  <div id="nx"></div>`;
+  app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>pick(+b.dataset.k));
+}
+
+function pick(k){
+  if(locked)return;locked=true;
+  const it=items[i],ok=it.o[k].c;
+  if(ok)score++;
+  log.push({q:it.q,e:it.e,mine:it.o[k].t,right:it.o.find(o=>o.c).t,ok});
+  app.querySelectorAll(".opt").forEach((b,n)=>{b.disabled=true;if(it.o[n].c)b.classList.add("ok");else if(n===k)b.classList.add("no")});
+  const last=i===items.length-1;
+  document.getElementById("nx").innerHTML=`<div class="ex"><strong>${ok?"Correct.":"Not quite."}</strong> ${esc(it.e)}</div><button class="btn" id="n">${last?"See results":"Next"}</button>`;
+  document.getElementById("n").onclick=()=>{if(last)end();else{i++;show()}};
+}
+
+function end(){
+  const pct=Math.round(score/items.length*100),wrong=log.filter(l=>!l.ok);
+  app.innerHTML=`<h1>Results</h1><div class="big">${score*2} / ${items.length*2}</div>
+  <p>${score} of ${items.length} correct (${pct}%)</p>
+  <button class="btn" id="again">Try again</button>
+  ${wrong.length?'<button class="btn alt" id="rw">Retry missed only</button>':""}
+  <h3>${wrong.length?"Review of missed questions":"Perfect score!"}</h3>
+  ${wrong.map(l=>`<div class="rev"><p><strong>${esc(l.q)}</strong></p><p><b>Your answer:</b> ${esc(l.mine)}</p><p><span>Correct:</span> ${esc(l.right)}</p><p>${esc(l.e)}</p></div>`).join("")}`;
+  document.getElementById("again").onclick=home;
+  const rw=document.getElementById("rw");
+  if(rw)rw.onclick=()=>{
+    const miss=new Set(wrong.map(l=>l.q));
+    items=shuffle(items.filter(x=>miss.has(x.q)));
+    items.forEach(x=>x.o=shuffle(x.o));
+    balance();
+    i=0;score=0;log=[];show();
+  };
+}
+home();
+</script>
+</body>
+</html>
